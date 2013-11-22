@@ -1,0 +1,5 @@
+{
+	"request.path": "/json",
+	"dump.path": "/dump",
+	"should.pay.toll": "false"
+}

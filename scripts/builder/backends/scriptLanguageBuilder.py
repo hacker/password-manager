@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
+import os
 import shutil
 from backendBuilder import BackendBuilder
 
 class ScriptLanguageBuilder(BackendBuilder):
+
+	def frontEndTempFolder (self):
+		return os.path.join(self.tempFolder(),'htdocs')
 
 	def compileCode (self):
 		src = self.sourceFolder()
