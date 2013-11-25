@@ -66,7 +66,7 @@ var CLIPPERZ = module.exports = function(CONFIG) {
 	   return (this.over=true),C.query('ROLLBACK',function(e){D();cb&&cb(e)});
 	  },
 	  end: function(e,cb) {
-	   if(e) LOGGER.trace(e,"rolling back transaction due to an error"),this.rollback(cb);
+	   if(e) return LOGGER.trace(e,"rolling back transaction due to an error"),this.rollback(cb);
 	   this.commit(cb);
 	  }
 	 });
