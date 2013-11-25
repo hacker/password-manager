@@ -64,7 +64,7 @@ var CLIPPERZ = module.exports = function(CONFIG) {
 	C.query(q,a,function(e,r) {
 	 var t1=new Date(), dt=t1-t0;
 	 D();
-	 LOGGER.trace({query:q,args:a,ms:dt,rows:r&&r.rowCount},"SQL query '%s' took %dms",q,dt);
+	 LOGGER.trace({query:q,args:a,ms:dt,rows:r&&r.rowCount,err:e},"SQL query '%s' took %dms",q,dt);
 	 cb(e,r);
 	});
    });
@@ -82,7 +82,7 @@ var CLIPPERZ = module.exports = function(CONFIG) {
 	   var t0=new Date();
 	   C.query(q,a,function(e,r) {
 		var t1=new Date(), dt=t1-t0;
-		LOGGER.trace({query:q,args:a,ms:dt,rows:r&&r.rowCount},"SQL query '%s' took %dms",q,dt);
+		LOGGER.trace({query:q,args:a,ms:dt,rows:r&&r.rowCount,err:e},"SQL query '%s' took %dms",q,dt);
 		cb(e,r);
 	   });
 	  },
