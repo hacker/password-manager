@@ -195,7 +195,7 @@ var CLIPPERZ = module.exports = function(CONFIG) {
      switch(message) {
       case 'getUserDetails': return ASYNC.parallel({
        u: function(cb) {
-	PG.Q("SELECT u_header,u_statistics,u_version FROM clipperz.theuser WHERE u_id=$1",
+	PG.Q("SELECT u_header::varchar,u_statistics,u_version FROM clipperz.theuser WHERE u_id=$1",
 	 [req.session.u],function(e,r) {
 	 if(e) return cb(e);
 	 if(!r.rowCount) return cb(new Error("user's gone AWOL"));
@@ -211,7 +211,7 @@ var CLIPPERZ = module.exports = function(CONFIG) {
        }
       },function(e,r) {
        if(e) return cb(e);
-       res.res({header:JSON.stringify(r.u.u_header),statistics:r.u.u_statistics,version:r.u.u_version,recordsStats:r.stats});
+       res.res({header:r.u.u_header,statistics:r.u.u_statistics,version:r.u.u_version,recordsStats:r.stats});
       });
 
       case 'saveChanges': return PG.T(function(e,T) {
@@ -471,13 +471,13 @@ var CLIPPERZ = module.exports = function(CONFIG) {
     u: function(cb) {
      PG.Q(
        "SELECT"
-      +" u_name, u_srp_s, u_srp_v, u_authversion, u_header, u_statistics, u_version"
+      +" u_name, u_srp_s, u_srp_v, u_authversion, u_header::varchar, u_statistics, u_version"
       +" FROM clipperz.theuser WHERE u_id=$1",[req.session.u],function(e,r) {
       if(e) return cb(e);
       if(!r.rowCount) return cb(new Error("user's gone AWOL"));
       r = r.rows[0];
       return cb(null,{u:r.u_name,d:{s:r.u_srp_s,v:r.u_srp_v, version:r.u_authversion,
-       maxNumberOfRecords: '100', userDetails: JSON.stringify(r.u_header),
+       maxNumberOfRecords: '100', userDetails: r.u_header,
        statistics: r.u_statistics, userDetailsVersion: r.u_version
       }});
      });
