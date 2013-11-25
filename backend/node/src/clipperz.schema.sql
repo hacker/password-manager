@@ -58,3 +58,10 @@ CREATE TABLE clipperz.theotp (
  otp_rtime timestamp NOT NULL DEFAULT current_timestamp,
  otp_utime timestamp NOT NULL DEFAULT current_timestamp
 );
+
+CREATE TABLE clipperz.thesession (
+ s_id varchar PRIMARY KEY,
+ s_data json,
+ s_ctime timestamp DEFAULT current_timestamp,
+ s_mtime timestamp DEFAULT current_timestamp
+);

@@ -3,6 +3,8 @@ var CRYPTO = require('crypto');
 var BIGNUM = require('bignum');
 var ASYNC = require('async');
 
+var express_store = require('express').session.Store;
+
 function clipperz_hash(v) {
  return CRYPTO.createHash('sha256').update(
   CRYPTO.createHash('sha256').update(v).digest('binary')
@@ -12,6 +14,35 @@ function clipperz_random() {
  for(var r = '';r.length<64;r+=''+BIGNUM(Math.floor(Math.random()*1e18)).toString(16));
  return r.substr(0,64);
 };
+function clipperz_store(PG) {
+ var rv = function(o) { express_store.call(this,o); }
+ rv.prototype.get = function(sid,cb) { PG.Q(
+  "SELECT s_data FROM clipperz.thesession WHERE s_id=$1",[sid],
+  function(e,r) { cb(e,(e||!r.rowCount)?null:r.rows[0].s_data); }
+ ) };
+ rv.prototype.set = function(sid,data,cb) { PG.Q(
+   "UPDATE clipperz.thesession SET s_data=$1, s_mtime=current_timestamp"
+  +" WHERE s_id=$2",[data,sid], function(e,r) {
+   if(e) return cb(e);
+   if(r.rowCount) return cb();
+   PG.Q("INSERT INTO clipperz.thesession (s_id,s_data) VALUES ($1,$2)",[sid,data],cb);
+  }
+ ) };
+ rv.prototype.destroy = function(sid,cb) { PG.Q(
+  "DELETE FROM clipperz.thesession WHERE s_id=$1",[sid],cb
+ ) };
+ rv.prototype.length = function(cb) { PG.Q(
+  "SELECT count(*) AS c FROM clipperz.thesession", function(e,r) {
+     cb(e,e?null:r.rows[0].c);
+  }
+ ) };
+ rv.prototype.length = function(cb) { PQ.Q(
+  "DELETE FROM clipperz.thesession", cb
+ ) };
+ rv.prototype.__proto__ = express_store.prototype;
+ return rv;
+}
+
 var srp_g = BIGNUM(2);
 var srp_n = BIGNUM("115b8b692e0e045692cf280b436735c77a5a9e8a9e7ed56c965f87db5b2a2ece3",16);
 var n123 = '112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00';
@@ -76,7 +107,7 @@ var CLIPPERZ = module.exports = function(CONFIG) {
  };
 
 
- return {
+ var rv = {
 
   json: function clipperz_json(req,res,cb) {
    var method = req.body.method, pp = JSON.parse(req.body.parameters).parameters;
@@ -532,6 +563,10 @@ var CLIPPERZ = module.exports = function(CONFIG) {
      +"Clipperz.Crypto.PRNG.defaultRandomGenerator().fastEntropyAccumulationForTestingPurpose();"));
    });
   }
+
  };
+ rv.__defineGetter__('session_store',function(){ return function(o) { return new (clipperz_store(PG))(o) } });
+
+ return rv;
 
 };

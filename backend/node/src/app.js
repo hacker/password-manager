@@ -17,20 +17,6 @@ var EXPRESS = require('express');
 var HTTP = require('http');
 var PATH = require('path');
 
-var app = EXPRESS();
-
-app.set('port', process.env.PORT || 3000);
-app.use(EXPRESS.logger('dev'));
-app.use(EXPRESS.urlencoded());
-app.use(EXPRESS.methodOverride());
-app.use(EXPRESS.cookieParser('your secret here'));
-app.use(EXPRESS.session());
-app.use(app.router);
-app.use(EXPRESS.static(PATH.join(__dirname, 'htdocs/')));
-if ('development' == app.get('env')) {
-  app.use(EXPRESS.errorHandler());
-}
-
 
 var CLIPPERZ = require('./clipperz');
 var CONF = require('./conf');
@@ -39,6 +25,22 @@ var clipperz = CLIPPERZ({
  logger: LOGGER,
  dump_template: PATH.join(__dirname,'htdocs/beta/index.html')
 });
+
+
+var app = EXPRESS();
+
+app.set('port', process.env.PORT || 3000);
+app.use(EXPRESS.logger('dev'));
+app.use(EXPRESS.urlencoded());
+app.use(EXPRESS.methodOverride());
+app.use(EXPRESS.cookieParser('your secret here'));
+app.use(EXPRESS.session({secret:'99 little bugs in the code', key:'sid', store: clipperz.session_store() }));
+app.use(app.router);
+app.use(EXPRESS.static(PATH.join(__dirname, 'htdocs/')));
+if ('development' == app.get('env')) {
+  app.use(EXPRESS.errorHandler());
+}
+
 
 app.post('/json',clipperz.json);
 app.get('/beta/dump',clipperz.dump);
