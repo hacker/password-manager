@@ -157,7 +157,7 @@ var CLIPPERZ = module.exports = function(CONFIG) {
        if(M1!=ppp.M1) return res.res({error:'?'});
        req.session.K = K;
        var M2 = clipperz_hash(A.toString(10)+M1+K.toString(16));
-       return res.res({M2:M2,connectionId:'',loginInfo:{latest:{},current:{}},offlineCopyNeededd:false,lock:'----'});
+       return res.res({M2:M2,connectionId:'',loginInfo:{latest:{},current:{}},offlineCopyNeeded:false,lock:'----'});
 
       case 'oneTimePassword': return PG.Q(
 	"UPDATE clipperz.theotp AS otp"
