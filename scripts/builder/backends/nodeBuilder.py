@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
+import os
 from scriptLanguageBuilder import ScriptLanguageBuilder
 
 class NodeBuilder(ScriptLanguageBuilder):
@@ -8,6 +9,9 @@ class NodeBuilder(ScriptLanguageBuilder):
 	def name(self):
 		return "Node builder"
 
-	
 	def relativePath(self):
 		return 'node'
+
+	def frontEndTempFolder (self):
+		return os.path.join(self.tempFolder(),'htdocs')
+
