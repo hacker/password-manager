@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import os
+import shutil
 from scriptLanguageBuilder import ScriptLanguageBuilder
 
 class NodeBuilder(ScriptLanguageBuilder):
@@ -14,4 +15,10 @@ class NodeBuilder(ScriptLanguageBuilder):
 
 	def frontEndTempFolder (self):
 		return os.path.join(self.tempFolder(),'htdocs')
+
+	def compileCode (self):
+		src = self.sourceFolder()
+		dst = self.tempFolder()
+
+		shutil.copytree(src, dst, ignore = shutil.ignore_patterns('htdocs','node_modules'))
 
