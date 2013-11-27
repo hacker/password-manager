@@ -76,6 +76,7 @@ var CLIPPERZ = module.exports = function(CONFIG) {
 	if(e) return cb(e);
 	C.query('BEGIN',function(e){
 	 if(e) return D(),cb(e);
+	 LOGGER.trace('SQL: transaction begun');
 	 cb(null,{
 	  Q: function(q,a,cb) {
 	   LOGGER.trace({query:q,args:a},'SQL: %s',q);
