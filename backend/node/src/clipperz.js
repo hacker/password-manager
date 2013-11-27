@@ -18,16 +18,18 @@ function clipperz_store(PG) {
  var rv = function(o) { express_store.call(this,o); }
  rv.prototype.get = function(sid,cb) { PG.Q(
   "SELECT s_data FROM clipperz.thesession WHERE s_id=$1",[sid],
-  function(e,r) { cb(e,(e||!r.rowCount)?null:r.rows[0].s_data); }
+  function(e,r) { cb(e,(e||!r.rowCount)?null:JSON.parse(r.rows[0].s_data)); }
  ) };
- rv.prototype.set = function(sid,data,cb) { PG.Q(
-   "UPDATE clipperz.thesession SET s_data=$1, s_mtime=current_timestamp"
-  +" WHERE s_id=$2",[data,sid], function(e,r) {
+ rv.prototype.set = function(sid,data,cb) {
+  var d = JSON.stringify(data);
+  PG.Q(
+    "UPDATE clipperz.thesession SET s_data=$1, s_mtime=current_timestamp"
+   +" WHERE s_id=$2",[d,sid], function(e,r) {
    if(e) return cb(e);
    if(r.rowCount) return cb();
-   PG.Q("INSERT INTO clipperz.thesession (s_id,s_data) VALUES ($1,$2)",[sid,data],cb);
-  }
- ) };
+   PG.Q("INSERT INTO clipperz.thesession (s_id,s_data) VALUES ($1,$2)",[sid,d],cb);
+  });
+ };
  rv.prototype.destroy = function(sid,cb) { PG.Q(
   "DELETE FROM clipperz.thesession WHERE s_id=$1",[sid],cb
  ) };
@@ -226,7 +228,7 @@ var CLIPPERZ = module.exports = function(CONFIG) {
      switch(message) {
       case 'getUserDetails': return ASYNC.parallel({
        u: function(cb) {
-	PG.Q("SELECT u_header::varchar,u_statistics,u_version FROM clipperz.theuser WHERE u_id=$1",
+	PG.Q("SELECT u_header,u_statistics,u_version FROM clipperz.theuser WHERE u_id=$1",
 	 [req.session.u],function(e,r) {
 	 if(e) return cb(e);
 	 if(!r.rowCount) return cb(new Error("user's gone AWOL"));
@@ -502,7 +504,7 @@ var CLIPPERZ = module.exports = function(CONFIG) {
     u: function(cb) {
      PG.Q(
        "SELECT"
-      +" u_name, u_srp_s, u_srp_v, u_authversion, u_header::varchar, u_statistics, u_version"
+      +" u_name, u_srp_s, u_srp_v, u_authversion, u_header, u_statistics, u_version"
       +" FROM clipperz.theuser WHERE u_id=$1",[req.session.u],function(e,r) {
       if(e) return cb(e);
       if(!r.rowCount) return cb(new Error("user's gone AWOL"));

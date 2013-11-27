@@ -5,7 +5,7 @@ CREATE TABLE clipperz.theuser (
  u_name varchar NOT NULL UNIQUE,
  u_srp_s varchar NOT NULL,
  u_srp_v varchar NOT NULL,
- u_header json NOT NULL,
+ u_header varchar NOT NULL,
  u_statistics varchar NOT NULL,
  u_authversion varchar NOT NULL,
  u_version varchar NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE clipperz.theotp (
 
 CREATE TABLE clipperz.thesession (
  s_id varchar PRIMARY KEY,
- s_data json,
+ s_data varchar,
  s_ctime timestamp DEFAULT current_timestamp,
  s_mtime timestamp DEFAULT current_timestamp
 );
