@@ -92,7 +92,7 @@ try {
 														{tag:'span', cls:'formLabel', htmlString:Clipperz.PM.Strings['changePasswordFormUsernameLabel']}
 													]},
 													{tag:'td', children:[
-														{tag:'input', type:'text', name:'username', id:this.getId('changePassphrase_username')}
+														{tag:'input', type:'text', name:'username', id:this.getId('changePassphrase_username'), autocomplete:'off'}
 													]}
 												]},
 												{tag:'tr', children:[
@@ -100,7 +100,7 @@ try {
 														{tag:'span', cls:'formLabel', htmlString:Clipperz.PM.Strings['changePasswordFormOldPassphraseLabel']}
 													]},
 													{tag:'td', children:[
-														{tag:'input', type:'password', name:'oldPassphrase', id:this.getId('changePassphrase_oldPassphrase')}
+														{tag:'input', type:'password', name:'oldPassphrase', id:this.getId('changePassphrase_oldPassphrase'), autocomplete:'off'}
 													]}
 												]},
 												{tag:'tr', children:[
@@ -108,7 +108,7 @@ try {
 														{tag:'span', cls:'formLabel', htmlString:Clipperz.PM.Strings['changePasswordFormNewPassphraseLabel']}
 													]},
 													{tag:'td', children:[
-														{tag:'input', type:'password', name:'newPassphrase', id:this.getId('changePassphrase_newPassphrase')}
+														{tag:'input', type:'password', name:'newPassphrase', id:this.getId('changePassphrase_newPassphrase'), autocomplete:'off'}
 													]}
 												]},
 												{tag:'tr', children:[
@@ -116,7 +116,7 @@ try {
 														{tag:'span', cls:'formLabel', htmlString:Clipperz.PM.Strings['changePasswordFormRetypePassphraseLabel']}
 													]},
 													{tag:'td', children:[
-														{tag:'input', type:'password', name:'renewPassphrase', id:this.getId('changePassphrase_renewPassphrase')}
+														{tag:'input', type:'password', name:'renewPassphrase', id:this.getId('changePassphrase_renewPassphrase'), autocomplete:'off'}
 													]}
 												]},
 												{tag:'tr', children:[
