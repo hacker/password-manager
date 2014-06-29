@@ -38,7 +38,7 @@ function clipperz_store(PG) {
      cb(e,e?null:r.rows[0].c);
   }
  ) };
- rv.prototype.length = function(cb) { PQ.Q(
+ rv.prototype.clear = function(cb) { PQ.Q(
   "DELETE FROM clipperz.thesession", cb
  ) };
  rv.prototype.__proto__ = express_store.prototype;
