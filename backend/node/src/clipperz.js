@@ -3,7 +3,7 @@ var CRYPTO = require('crypto');
 var BIGNUM = require('bignum');
 var ASYNC = require('async');
 
-var express_store = require('express').session.Store;
+var express_store = require('express-session').Store;
 
 function clipperz_hash(v) {
  return CRYPTO.createHash('sha256').update(

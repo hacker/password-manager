@@ -30,20 +30,20 @@ var clipperz = CLIPPERZ({
 var app = EXPRESS();
 
 app.set('port', process.env.PORT || 3000);
-app.use(EXPRESS.logger('dev'));
-app.use(EXPRESS.urlencoded());
-app.use(EXPRESS.methodOverride());
-app.use(EXPRESS.cookieParser('your secret here'));
-app.use(EXPRESS.session({secret:'99 little bugs in the code', key:'sid', store: clipperz.session_store() }));
-app.use(app.router);
-app.use(EXPRESS.static(PATH.join(__dirname, 'htdocs/')));
-if ('development' == app.get('env')) {
-  app.use(EXPRESS.errorHandler());
-}
-
+app.use(require('morgan')('dev'));
+app.use(require('body-parser').urlencoded({extended:true}));
+app.use(require('cookie-parser')('your secret here'));
+app.use(require('express-session')({secret:'99 little bugs in the code', key:'sid', store: clipperz.session_store(), resave: false, saveUninitialized: false }));
 
 app.post('/json',clipperz.json);
 app.get('/beta/dump',clipperz.dump);
+
+app.use(EXPRESS.static(PATH.join(__dirname, 'htdocs/')));
+if ('development' == app.get('env')) {
+  app.use(require('express-error-with-sources')());
+}
+
+
 
 
 HTTP.createServer(app).listen(app.get('port'), function(){
