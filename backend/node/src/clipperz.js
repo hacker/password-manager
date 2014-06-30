@@ -173,6 +173,8 @@ var CLIPPERZ = module.exports = function(CONFIG) {
        }]
       },function(e,r) {
        if(e) return cb(e);
+       var A = BIGNUM(ppp.A,16);
+       if(A.eq(0)) return cb(new Error('Ground Zero'));
        req.session.C = ppp.C; req.session.A = ppp.A;
        req.session.s = r.u.u_srp_s; req.session.v = r.u.u_srp_v;
        req.session.u = r.u.u_id;
