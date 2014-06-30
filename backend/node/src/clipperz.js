@@ -47,6 +47,8 @@ function clipperz_store(PG) {
 
 var srp_g = BIGNUM(2);
 var srp_n = BIGNUM("115b8b692e0e045692cf280b436735c77a5a9e8a9e7ed56c965f87db5b2a2ece3",16);
+var srp_k = BIGNUM("64398bff522814e306a97cb9bfc4364b7eed16a8c17c5208a40a2bad2933c8e",16);
+var srp_hn = "597626870978286801440197562148588907434001483655788865609375806439877501869636875571920406529";
 var n123 = '112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00';
 
 
@@ -175,19 +177,24 @@ var CLIPPERZ = module.exports = function(CONFIG) {
        req.session.s = r.u.u_srp_s; req.session.v = r.u.u_srp_v;
        req.session.u = r.u.u_id;
        req.session.b = clipperz_random();
-       req.session.B = BIGNUM(req.session.v,16).add(srp_g.powm(BIGNUM(req.session.b,16),srp_n)).toString(16);
+       req.session.B = srp_k.mul(BIGNUM(req.session.v,16)).add(srp_g.powm(BIGNUM(req.session.b,16),srp_n)).toString(16);
        var rv = {s:req.session.s,B:req.session.B}
        if(r.otp && r.otp.otp_ref) rv.oneTimePassword=r.otp.otp_ref;
        res.res(rv);
       });
  
       case 'credentialCheck':
-       var u = clipperz_hash(BIGNUM(req.session.B,16).toString(10));
+       var u = clipperz_hash(BIGNUM(req.session.A,16).toString(10)+BIGNUM(req.session.B,16).toString(10));
        var A = BIGNUM(req.session.A,16);
-       var S = A.mul(BIGNUM(req.session.v,16).powm(BIGNUM(u,16),srp_n)).powm(
-		BIGNUM(req.session.b,16), srp_n);
+       var S = A.mul(BIGNUM(req.session.v,16).powm(BIGNUM(u,16),srp_n)).powm(BIGNUM(req.session.b,16),srp_n);
        var K = clipperz_hash(S.toString(10));
-       var M1 = clipperz_hash(A.toString(10)+BIGNUM(req.session.B,16).toString(10)+K.toString(16));
+       var M1 = clipperz_hash(
+                 srp_hn
+		 +clipperz_hash(req.session.C)
+		 +BIGNUM(req.session.s,16).toString(10)
+		 +A.toString(10)
+		 +BIGNUM(req.session.B,16).toString(10)
+		 +K );
        if(M1!=ppp.M1) return res.res({error:'?'});
        req.session.K = K;
        var M2 = clipperz_hash(A.toString(10)+M1+K.toString(16));
