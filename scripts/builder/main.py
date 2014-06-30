@@ -88,7 +88,7 @@ def build (settings, repository):
 	frontends = []
 	
 	if repository.areTherePendingChanges():
-		if 'install' in settings['versions']:
+		if 'install' in settings['versions'] and not settings['forcedirty']:
 			raise Exception("repository has pending changes, can't 'install'")
 		else:
 			print "\nWARNING: repository has pending changes\n"
@@ -150,6 +150,9 @@ def main ():
 	sys.path.append(os.path.join(scriptDir(), 'frontends'))
 	currentRepository = repository.repositoryWithPath(projectBaseDir())
 
+	settings['forcedirty'] = len(parameters)
+	parameters = list(itertools.ifilter(lambda x: not x=='--force-dirty', parameters))
+	settings['forcedirty'] = len(parameters)==settings['forcedirty']
 	clean()
 	versions = list(itertools.takewhile(lambda x: not x.startswith('--'), parameters))
 	settings['versions']  = versions;		#['debug', 'install', 'development', 'checksum']
