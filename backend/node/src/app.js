@@ -36,7 +36,7 @@ app.use(require('cookie-parser')('your secret here'));
 app.use(require('express-session')({secret:'99 little bugs in the code', key:'sid', store: clipperz.session_store(), resave: false, saveUninitialized: false }));
 
 app.post('/json',clipperz.json);
-app.get('/beta/dump',clipperz.dump);
+app.get('/dump',clipperz.dump);
 
 app.use(EXPRESS.static(PATH.join(__dirname, 'htdocs/')));
 if ('development' == app.get('env')) {
