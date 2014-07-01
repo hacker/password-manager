@@ -2,6 +2,8 @@ var FS = require('fs');
 var CRYPTO = require('crypto');
 var BIGNUM = require('bignum');
 var ASYNC = require('async');
+var EXPRESS = require('express');
+var PATH = require('path');
 
 var express_store = require('express-session').Store;
 
@@ -578,6 +580,10 @@ var CLIPPERZ = module.exports = function(CONFIG) {
 
  };
  rv.__defineGetter__('session_store',function(){ return function(o) { return new (clipperz_store(PG))(o) } });
+
+ (rv.router = require('express').Router())
+  .post('/json',rv.json).get('/dump',rv.dump)
+  .use(EXPRESS.static(PATH.join(__dirname,'htdocs/')));
 
  return rv;
 

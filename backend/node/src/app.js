@@ -35,10 +35,11 @@ app.use(require('body-parser').urlencoded({extended:true}));
 app.use(require('cookie-parser')('your secret here'));
 app.use(require('express-session')({secret:'99 little bugs in the code', key:'sid', store: clipperz.session_store(), resave: false, saveUninitialized: false }));
 
-app.post('/json',clipperz.json);
-app.get('/dump',clipperz.dump);
+/* Like this: */
+app.use(clipperz.router);
+/* Or this: */
+app.use('/clz/',clipperz.router);
 
-app.use(EXPRESS.static(PATH.join(__dirname, 'htdocs/')));
 if ('development' == app.get('env')) {
   app.use(require('express-error-with-sources')());
 }
